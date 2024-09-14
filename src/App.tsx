@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { FC, useEffect } from 'react'
+import './App.css'
+import UsersTable from './components/UsersTable'
+import { useDispatch } from 'react-redux'
+import { FETCH_USERS } from './store/UsersTableReducer'
 
-function App() {
+const App: FC = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    getUsersData()
+  }, [])
+
+  const getUsersData = async () => {
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/users')
+      const users = await response.json()
+
+      dispatch({ type: FETCH_USERS, payload: users })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>Hello World</p>
+      <UsersTable />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
