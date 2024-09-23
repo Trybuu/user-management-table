@@ -2,15 +2,18 @@ import { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from '../store/AppStore'
 import { User } from '../store/UsersTableReducer'
+import { useDispatch } from 'react-redux'
+import { FILTER_USERS } from '../store/UsersTableReducer'
 
 const UsersTable: FC = () => {
   const users: User[] | null = useSelector(
     (state: AppState) => state.usersTable.users,
   )
+  const dispatch = useDispatch()
 
   const table =
     users &&
-    users.map((user: User, index: number) => (
+    users.map((user: User) => (
       <tr key={user.id}>
         <td>{user.name}</td>
         <td>{user.username}</td>
@@ -20,7 +23,10 @@ const UsersTable: FC = () => {
     ))
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
+    dispatch({
+      type: FILTER_USERS,
+      payload: { [e.target.name]: e.target.value },
+    })
   }
 
   if (table)
@@ -29,16 +35,20 @@ const UsersTable: FC = () => {
         <thead>
           <tr>
             <th>
-              <input type="text" onChange={handleFilterChange} />
+              <input type="text" name="name" onChange={handleFilterChange} />
             </th>
             <th>
-              <input type="text" onChange={handleFilterChange} />
+              <input
+                type="text"
+                name="username"
+                onChange={handleFilterChange}
+              />
             </th>
             <th>
-              <input type="text" onChange={handleFilterChange} />
+              <input type="text" name="email" onChange={handleFilterChange} />
             </th>
             <th>
-              <input type="text" onChange={handleFilterChange} />
+              <input type="text" name="phone" onChange={handleFilterChange} />
             </th>
           </tr>
           <tr>

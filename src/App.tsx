@@ -9,7 +9,7 @@ const App: FC = () => {
 
   useEffect(() => {
     getUsersData()
-  }, [])
+  })
 
   const getUsersData = async () => {
     try {
@@ -24,7 +24,6 @@ const App: FC = () => {
 
   return (
     <div className="App">
-      <p>Hello World</p>
       <UsersTable />
     </div>
   )
