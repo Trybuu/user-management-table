@@ -14,7 +14,8 @@ export interface Filters {
 }
 
 export interface UsersTableState {
-  users: User[]
+  users: User[] // Pełna lista użytkowników
+  filteredUsers: User[] // Lista przefiltrowanych użytkowników
   filters: Filters
 }
 
@@ -33,6 +34,7 @@ export const FILTER_USERS = 'FILTER_USERS'
 
 const initialState: UsersTableState = {
   users: [],
+  filteredUsers: [],
   filters: {
     name: '',
     username: '',
@@ -50,6 +52,35 @@ export const UsersTableReducer = (
       return {
         ...state,
         users: action.payload,
+        filteredUsers: action.payload,
+      }
+    case FILTER_USERS:
+      const updatedFilters = {
+        ...state.filters,
+        ...action.payload,
+      }
+
+      const filteredUsers = state.users.filter((user) => {
+        const matchName = user.name
+          .toLowerCase()
+          .includes(updatedFilters.name.toLowerCase())
+        const matchUsername = user.username
+          .toLowerCase()
+          .includes(updatedFilters.username.toLowerCase())
+        const matchEmail = user.email
+          .toLowerCase()
+          .includes(updatedFilters.email.toLowerCase())
+        const matchPhone = user.phone
+          .toLowerCase()
+          .includes(updatedFilters.phone.toLowerCase())
+
+        return matchName && matchUsername && matchEmail && matchPhone
+      })
+
+      return {
+        ...state,
+        filters: updatedFilters,
+        filteredUsers,
       }
     default:
       return state
@@ -63,7 +94,7 @@ export const fetchUsers = (users: User[]) => {
   }
 }
 
-export const filterUsers = (filters: Filters) => {
+export const filterUsers = (filters: Partial<Filters>) => {
   return {
     type: FILTER_USERS,
     payload: filters,
